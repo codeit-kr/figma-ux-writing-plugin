@@ -57,6 +57,20 @@ npm run build
 1. Figma > Plugins > Development > Import plugin from manifest...
 2. `dist/manifest.json` 선택
 
+## 업데이트
+
+Notion 가이드라인이 변경된 경우 플러그인 설정 탭에서 동기화해 주세요.
+
+플러그인 코드에 변경이 있으면 사용자 각자 다시 빌드해야 합니다.
+
+```bash
+git pull
+npm install
+npm run build
+```
+
+Figma에서 플러그인을 다시 로드할 필요는 없으며, `dist/` 폴더가 갱신되면 자동 반영됩니다.
+
 ## Worker
 
 Figma 플러그인은 외부 API를 직접 호출할 수 없어서 (CORS), Vercel에 프록시 서버를 배포합니다. Notion API와 OpenAI API 호출을 모두 서버에서 처리하며, API key는 Vercel 환경변수로 관리됩니다.
