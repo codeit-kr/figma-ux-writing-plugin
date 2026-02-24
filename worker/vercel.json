@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/blocks/:id/children", "destination": "/api/blocks?id=:id" },
+    { "source": "/databases/:id/query", "destination": "/api/databases?id=:id" },
+    { "source": "/review", "destination": "/api/review" }
+  ]
+}

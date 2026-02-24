@@ -1,0 +1,14 @@
+{
+  "name": "Codeit UX Writing Checker",
+  "id": "figma-ux-writing-plugin",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://figma-ux-writing-plugin-notion-work.vercel.app"
+    ],
+    "reasoning": "Worker 프록시를 통한 AI 텍스트 교정 및 Notion 가이드라인 동기화"
+  }
+}

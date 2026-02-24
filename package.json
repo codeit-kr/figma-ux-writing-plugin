@@ -1,0 +1,30 @@
+{
+  "name": "figma-ux-writing-plugin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"vite build --watch\" \"vite build --watch -c vite.config.plugin.ts\"",
+    "sync": "node scripts/sync-notion.mjs",
+    "build": "vite build && mv dist/index.html dist/ui.html && vite build -c vite.config.plugin.ts && sed 's|dist/code.js|code.js|;s|dist/ui.html|ui.html|' manifest.json > dist/manifest.json",
+    "build:ui": "vite build",
+    "build:plugin": "vite build -c vite.config.plugin.ts"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.100.2",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.3",
+    "vite-plugin-singlefile": "^2.0.3"
+  }
+}
