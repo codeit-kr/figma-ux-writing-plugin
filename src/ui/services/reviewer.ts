@@ -3,11 +3,11 @@ import { callOpenAI, type ReviewResponse } from './openai';
 
 // 타겟별 컴포넌트명/프레임명/레이어명 매칭 키워드
 const TARGET_KEYWORDS: Record<string, RegExp> = {
-  '인풋': /input|인풋|placeholder|검색|search|text\s?field|text\s?area/i,
+  '인풋': /input|인풋|placeholder|text\s?field|text\s?area/i,
   '토스트': /toast|토스트|snackbar|스낵바/i,
   '툴팁': /tooltip|툴팁/i,
-  '헬퍼텍스트': /helper|헬퍼|caption|도움말|설명 텍스트/i,
-  '모달': /modal|모달|dialog|다이얼로그|popup|팝업|alert|얼럿/i,
+  '헬퍼텍스트': /helper|헬퍼텍스트/i,
+  '모달': /modal|모달|dialog|다이얼로그|popup|팝업/i,
   '버튼': /button|버튼|btn|cta/i,
 };
 
