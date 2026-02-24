@@ -2,9 +2,25 @@
 
 figma.showUI(__html__, { width: 400, height: 560 });
 
+function findComponentName(node: BaseNode): string {
+  var current: BaseNode | null = node.parent;
+  while (current) {
+    if (current.type === 'INSTANCE') {
+      var mainComp = (current as InstanceNode).mainComponent;
+      if (mainComp) return mainComp.name;
+      return current.name;
+    }
+    if (current.type === 'COMPONENT') {
+      return current.name;
+    }
+    current = current.parent;
+  }
+  return '';
+}
+
 function getTextNodes() {
   var selection = figma.currentPage.selection;
-  var textNodes: { id: string; characters: string; layerName: string; parentName: string }[] = [];
+  var textNodes: { id: string; characters: string; layerName: string; parentName: string; componentName: string }[] = [];
 
   function collectTextNodes(node: SceneNode) {
     if (node.type === 'TEXT') {
@@ -17,6 +33,7 @@ function getTextNodes() {
         characters: node.characters,
         layerName: node.name,
         parentName: parentName,
+        componentName: findComponentName(node),
       });
     } else if ('children' in node) {
       for (var i = 0; i < node.children.length; i++) {

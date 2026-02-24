@@ -4,6 +4,7 @@ export interface TextNodeInfo {
   characters: string;
   layerName: string;
   parentName: string;
+  componentName: string;
 }
 
 export interface SelectionMessage {
