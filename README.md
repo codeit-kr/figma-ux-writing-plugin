@@ -6,7 +6,7 @@
 
 - Figma에서 텍스트 레이어를 선택하면 AI(GPT-4o-mini)가 UX writing 가이드라인 위반 여부를 검토
 - 교정 제안을 한 번의 클릭으로 적용/되돌리기/무시 가능
-- Notion에 관리되는 가이드라인을 실시간 동기화 가능
+- Notion에 관리되는 가이드라인을 플러그인에서 바로 동기화
 
 ## 구조
 
@@ -23,9 +23,6 @@ worker/                   # API 프록시 (Vercel Serverless)
   api/blocks.js           # Notion 페이지 블록 조회
   api/databases.js        # Notion DB 쿼리
   api/review.js           # OpenAI 프록시
-
-scripts/
-  sync-notion.mjs         # 가이드라인 빌드타임 동기화 (Worker 경유)
 ```
 
 ## 설치 및 실행
@@ -36,15 +33,7 @@ scripts/
 npm install
 ```
 
-### 2. 가이드라인 동기화
-
-Notion에서 최신 가이드라인을 가져와 `src/ui/data/guidelines.json`에 저장합니다.
-
-```bash
-npm run sync
-```
-
-### 3. 빌드
+### 2. 빌드
 
 ```bash
 npm run build
@@ -52,14 +41,14 @@ npm run build
 
 `dist/` 폴더에 `code.js`, `ui.html`, `manifest.json`이 생성됩니다.
 
-### 4. Figma에서 로드
+### 3. Figma에서 로드
 
 1. Figma > Plugins > Development > Import plugin from manifest...
 2. `dist/manifest.json` 선택
 
 ## 업데이트
 
-Notion 가이드라인이 변경된 경우 플러그인 설정 탭에서 동기화해 주세요.
+가이드라인은 플러그인 첫 실행 시 자동으로 최신 상태로 동기화됩니다. 가이드라인에 변경이 발생해 수동 동기화가 필요하면 설정 탭에서 할 수 있습니다.
 
 플러그인 코드에 변경이 있으면 사용자 각자 다시 빌드해야 합니다.
 
@@ -89,5 +78,5 @@ npx vercel --prod
 
 | 항목 | 위치 | 설명 |
 |---|---|---|
-| Notion Page ID | `scripts/sync-notion.mjs` | 가이드라인 페이지 |
-| Notion DB ID | `scripts/sync-notion.mjs` | 규칙 데이터베이스 |
+| Notion Page ID | `src/ui/services/notion.ts` | 가이드라인 페이지 |
+| Notion DB ID | `src/ui/services/notion.ts` | 규칙 데이터베이스 |

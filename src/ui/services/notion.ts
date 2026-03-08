@@ -1,18 +1,9 @@
 import type { GuidelineCache, NotionRule } from '../../shared/types';
-import guidelinesData from '../data/guidelines.json';
 
 const WORKER_BASE_URL = 'https://figma-ux-writing-plugin-notion-work.vercel.app';
 
 const PAGE_ID = '888ae75fc2964167a8ce5f3767e60280';
 const DATABASE_ID = '700da2a92fdd488391334b063044cf09';
-
-export function loadBundledGuidelines(): GuidelineCache {
-  return {
-    pageText: guidelinesData.pageText,
-    rules: guidelinesData.rules,
-    timestamp: new Date(guidelinesData.syncedAt).getTime(),
-  };
-}
 
 function extractRichText(richText: Array<{ plain_text?: string }>): string {
   if (!Array.isArray(richText)) return '';

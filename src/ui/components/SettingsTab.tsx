@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import type { GuidelineCache } from '../../shared/types';
 import { syncFromWorker } from '../services/notion';
+import { postToPlugin } from '../hooks/usePluginMessage';
+
+const STORAGE_KEY = 'guidelines-cache';
 
 interface Props {
   cache: GuidelineCache;
@@ -19,6 +22,7 @@ export default function SettingsTab({ cache, onSync }: Props) {
     try {
       const newCache = await syncFromWorker();
       onSync(newCache);
+      postToPlugin({ type: 'set-storage', key: STORAGE_KEY, value: JSON.stringify(newCache) });
       setSyncMessage({ text: `${newCache.rules.length}개 규칙 동기화 완료`, isError: false });
     } catch (error) {
       setSyncMessage({ text: `동기화 실패: ${error}`, isError: true });

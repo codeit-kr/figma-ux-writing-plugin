@@ -1,10 +1,12 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import type { TextNodeInfo, ReviewResult, GuidelineCache, PluginMessage, HistoryEntry } from '../shared/types';
 import { usePluginMessage, postToPlugin } from './hooks/usePluginMessage';
 import { reviewTexts } from './services/reviewer';
-import { loadBundledGuidelines } from './services/notion';
+import { syncFromWorker } from './services/notion';
 import ReviewTab from './components/ReviewTab';
 import SettingsTab from './components/SettingsTab';
+
+const STORAGE_KEY = 'guidelines-cache';
 
 type Tab = 'review' | 'settings';
 
@@ -13,8 +15,14 @@ export default function App() {
   const [texts, setTexts] = useState<TextNodeInfo[]>([]);
   const [results, setResults] = useState<ReviewResult[]>([]);
   const [isReviewing, setIsReviewing] = useState(false);
-  const [cache, setCache] = useState<GuidelineCache>(() => loadBundledGuidelines());
+  const [cache, setCache] = useState<GuidelineCache>({ pageText: '', rules: [], timestamp: 0 });
   const [reviewHistory, setReviewHistory] = useState<HistoryEntry[]>([]);
+  const cacheLoaded = useRef(false);
+
+  // clientStorage에서 캐시 로드 (없으면 첫 사용이므로 자동 동기화)
+  useEffect(() => {
+    postToPlugin({ type: 'get-storage', key: STORAGE_KEY });
+  }, []);
   const resultsRef = useRef<ReviewResult[]>([]);
   resultsRef.current = results;
   const revertingNodeIds = useRef<Set<string>>(new Set());
@@ -38,6 +46,21 @@ export default function App() {
         }
         return msg.texts;
       });
+    } else if (msg.type === 'storage-result' && msg.key === STORAGE_KEY) {
+      if (msg.value && !cacheLoaded.current) {
+        cacheLoaded.current = true;
+        const parsed = JSON.parse(msg.value) as GuidelineCache;
+        setCache(parsed);
+      } else if (!cacheLoaded.current) {
+        // 첫 사용: 캐시가 없으면 자동 동기화
+        cacheLoaded.current = true;
+        syncFromWorker()
+          .then((newCache) => {
+            setCache(newCache);
+            postToPlugin({ type: 'set-storage', key: STORAGE_KEY, value: JSON.stringify(newCache) });
+          })
+          .catch((err) => postToPlugin({ type: 'notify', message: `가이드라인 동기화 실패: ${err}` }));
+      }
     } else if (msg.type === 'replace-result') {
       if (!msg.success) {
         postToPlugin({ type: 'notify', message: `텍스트 교체 실패: ${msg.error || '알 수 없는 오류'}` });
