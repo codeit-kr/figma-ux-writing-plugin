@@ -1,4 +1,5 @@
 const WORKER_URL = 'https://figma-ux-writing-plugin-notion-work.vercel.app';
+const PLUGIN_ACCESS_KEY = 'b8de025689212511eab151c93f4a69c5';
 
 export interface ReviewResponse {
   results: {
@@ -18,6 +19,7 @@ export async function callOpenAI(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-api-key': PLUGIN_ACCESS_KEY,
     },
     body: JSON.stringify({ systemPrompt, userPrompt }),
   });

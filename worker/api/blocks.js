@@ -3,13 +3,20 @@ const NOTION_API_BASE = 'https://api.notion.com/v1';
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, x-api-key',
 };
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     res.writeHead(204, CORS_HEADERS);
     return res.end();
+  }
+
+  // Verify shared secret
+  const apiKey = req.headers['x-api-key'];
+  if (!apiKey || apiKey !== process.env.PLUGIN_ACCESS_KEY) {
+    Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const blockId = req.query.id;

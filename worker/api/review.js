@@ -1,7 +1,7 @@
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, x-api-key',
 };
 
 export default async function handler(req, res) {
@@ -13,6 +13,13 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Verify shared secret
+  const apiKey = req.headers['x-api-key'];
+  if (!apiKey || apiKey !== process.env.PLUGIN_ACCESS_KEY) {
+    Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const { systemPrompt, userPrompt } = req.body || {};
