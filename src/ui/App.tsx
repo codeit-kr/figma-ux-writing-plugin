@@ -15,7 +15,7 @@ export default function App() {
   const [texts, setTexts] = useState<TextNodeInfo[]>([]);
   const [results, setResults] = useState<ReviewResult[]>([]);
   const [isReviewing, setIsReviewing] = useState(false);
-  const [cache, setCache] = useState<GuidelineCache>({ pageText: '', rules: [], timestamp: 0 });
+  const [cache, setCache] = useState<GuidelineCache>({ rules: [], timestamp: 0 });
   const [reviewHistory, setReviewHistory] = useState<HistoryEntry[]>([]);
   const cacheLoaded = useRef(false);
 

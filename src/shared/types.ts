@@ -86,7 +86,6 @@ export interface HistoryEntry {
 
 // 캐시 타입
 export interface GuidelineCache {
-  pageText: string;
   rules: NotionRule[];
   timestamp: number;
 }

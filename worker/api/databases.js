@@ -1,5 +1,9 @@
 const NOTION_API_BASE = 'https://api.notion.com/v1';
 
+const ALLOWED_DATABASE_IDS = new Set([
+  '700da2a92fdd488391334b063044cf09',
+]);
+
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -23,6 +27,11 @@ export default async function handler(req, res) {
   if (!dbId) {
     Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
     return res.status(400).json({ error: 'Missing database id' });
+  }
+
+  if (!ALLOWED_DATABASE_IDS.has(dbId.replace(/-/g, ''))) {
+    Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+    return res.status(403).json({ error: 'Database not allowed' });
   }
 
   const response = await fetch(`${NOTION_API_BASE}/databases/${dbId}/query`, {
